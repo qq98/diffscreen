@@ -24,6 +24,17 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build lib{x11,xext,xft,xinerama,xcursor,xrender,xfixes,pango1.0,gl1-mesa,glu1-mesa,xdo,xcb-randr0}-dev libvpx-dev pkg-config
+    - name: Install bindgen
+      run: |
+        rustup component add rust-src
+        cargo install bindgen
+    - name: Generate bindings
+      run: |
+        bindgen /path/to/vpx.h -o generated/vpx-ffi-1.14.0.rs
     - name: Build
       working-directory: "."
       shell: bash
@@ -42,9 +53,6 @@ jobs:
         }
         export -f log
         if [[ ${RUNNER_OS} == "Linux" ]]; then
-            log 'info' 'Download dep'
-            sudo apt-get update
-            sudo apt-get install -y ninja-build lib{x11,xext,xft,xinerama,xcursor,xrender,xfixes,pango1.0,gl1-mesa,glu1-mesa,xdo,xcb-randr0}-dev libvpx-dev pkg-config
             log 'info' 'Cargo Clippy'
             cargo clippy --quiet
             log 'info' 'Cargo Build'
