@@ -59,7 +59,7 @@ jobs:
             cargo build --quiet --release
         fi > /dev/null
     - name: Archive
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         retention-days: 1
         path: target/release/*
